@@ -9,25 +9,53 @@ const EmailRegistration = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    setSubmitted(true);
+  //   setSubmitted(true);
+
+  //   try {
+
+  //     const response = await api.post(
+  //       "/api/auth/start",
+  //       email
+  //     );
+
+  //     console.log(response.data);
+
+  //   } catch (error) {
+
+  //     console.log(error);
+
+  //     console.log(error.response?.data);
+  //   }
+  // };
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
 
     try {
 
       const response = await api.post(
         "/api/auth/start",
-        email
+        {
+          email: email
+        }
       );
 
       console.log(response.data);
+
+      setSubmitted(true);
 
     } catch (error) {
 
       console.log(error);
 
       console.log(error.response?.data);
+
+      alert(
+        error.response?.data || "Something went wrong"
+      );
     }
   };
   if (submitted) {
