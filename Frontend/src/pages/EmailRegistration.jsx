@@ -11,21 +11,25 @@ const EmailRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setSubmitted(true);
+
     try {
-      // The backend expects a query parameter for email
+
       const response = await api.post(
         "/api/auth/start",
-        email,                                          // plain string, not an object
-        { headers: { "Content-Type": "text/plain" } }  // match @RequestBody String
+        email
       );
+
       console.log(response.data);
 
     } catch (error) {
+
       console.log(error);
+
+      console.log(error.response?.data);
     }
   };
-
   if (submitted) {
     return (
       <AuthLayout

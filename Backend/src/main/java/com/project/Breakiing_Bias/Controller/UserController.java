@@ -1,5 +1,6 @@
 package com.project.Breakiing_Bias.Controller;
 
+import com.project.Breakiing_Bias.DTO.EmailRequest;
 import com.project.Breakiing_Bias.DTO.LoginRequest;
 import com.project.Breakiing_Bias.DTO.ResetPasswordRequest;
 import com.project.Breakiing_Bias.DTO.UsernameRequest;
@@ -41,10 +42,10 @@ public class UserController {
     // STEP 1
     @PostMapping("/start")
     public ResponseEntity<?> start(
-            @RequestBody String user
+            @RequestBody EmailRequest user
     ) {
 
-        userService.startRegistration(user);
+        userService.startRegistration(user.getEmail());
 
         System.out.println(
                 "Registration initiated ....."
