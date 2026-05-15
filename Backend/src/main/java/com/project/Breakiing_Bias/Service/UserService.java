@@ -25,16 +25,37 @@ public class UserService {
         return repo.findByUsername(username);
     }
     public void startRegistration(String email){
-        if(repo.findByEmail(email) != null){
-            throw new RuntimeException("Email already exists");
+
+        Users existingUser = repo.findByEmail(email);
+
+        // user already exists
+        if(existingUser != null){
+
+            // if already verified
+            if(existingUser.isVerified()){
+                throw new RuntimeException("Email already exists");
+            }
+
+            // resend verification token
+            String token = UUID.randomUUID().toString();
+
+            existingUser.setVerificationToken(token);
+
+            repo.save(existingUser);
+
+            emailService.linkSender(existingUser, token);
+
+            return;
         }
 
+        // new user
         Users user = new Users();
 
         user.setEmail(email);
         user.setVerified(false);
 
         String token = UUID.randomUUID().toString();
+
         user.setVerificationToken(token);
 
         repo.save(user);
