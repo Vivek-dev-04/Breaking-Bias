@@ -48,6 +48,9 @@ public class SecurityConfig {
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
+    @Value("${app.base-url}")
+    private String backendUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -68,7 +71,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173",
-                        frontendUrl)
+                        frontendUrl
+                        )
         );
 
         config.setAllowedMethods(
