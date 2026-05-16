@@ -12,3 +12,5 @@ backend/.env
 .vscode
 .env
 target/
+.env
+target/
