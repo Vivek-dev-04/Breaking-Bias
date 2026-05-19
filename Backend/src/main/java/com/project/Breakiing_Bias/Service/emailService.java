@@ -1,51 +1,38 @@
-package com.project.Breakiing_Bias.Service;
-
-import com.project.Breakiing_Bias.Entity.Users;
-import com.project.Breakiing_Bias.Repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.UUID;
+import sibApi.TransactionalEmailsApi;
+import sibModel.SendSmtpEmail;
+import sibModel.SendSmtpEmailTo;
+import ApiClient;
+import ApiException;
 
 @Service
 public class emailService {
 
-    @Value("${app.base-url}")
-    private String baseUrl;
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
 
-    @Autowired
-    private UserRepo repo;
+    public void linkSender(Users user, String token) {
+        try {
+            ApiClient client = new ApiClient();
+            client.setApiKey(brevoApiKey);
 
-    @Autowired
-    private JavaMailSender mailSender;
+            TransactionalEmailsApi api = new TransactionalEmailsApi(client);
 
+            SendSmtpEmailTo to = new SendSmtpEmailTo();
+            to.setEmail(user.getEmail());
+            to.setName(user.getUsername());
 
-    public void linkSender(Users user, String token){
+            SendSmtpEmail email = new SendSmtpEmail();
+            email.setTo(List.of(to));
+            email.setSender(new sibModel.SendSmtpEmailSender()
+                    .email("abcae3001@smtp-brevo.com")
+                    .name("Breaking Bias"));
+            email.setSubject("Email Verification");
+            email.setTextContent("Click to verify: " + 
+                "https://breaking-bias-production.up.railway.app/api/auth/verify?token=" + token);
 
-        String link = baseUrl+"/api/auth/verify?token="+token;
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("javathhompson92@gmail.com");
-        message.setTo(user.getEmail());
-        message.setSubject("Email Verification");
-        message.setText("Click the link given below to verify your mail id:");
-        message.setText(link);
-
-        mailSender.send(message);
+            api.sendTransacEmail(email);
+        } catch (ApiException e) {
+            throw new RuntimeException("Email failed: " + e.getMessage());
+        }
     }
-    public void forgotLinkSender(Users user, String token){
-
-        String link = baseUrl+"/api/auth/forgot/verify?token="+token;
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("javathhompson92@gmail.com");
-        message.setTo(user.getEmail());
-        message.setSubject("Password Reset");
-        message.setText("Click the link given below to reset your password:\n\n"+link);
-
-        mailSender.send(message);
-    }
-
 }
