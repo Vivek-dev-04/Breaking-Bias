@@ -44,32 +44,45 @@ public class emailService {
     }
 
     private void sendEmail(String toEmail, String subject, String body) {
-        try {
-            ApiClient defaultClient = Configuration.getDefaultApiClient();
-            ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
-            apiKey.setApiKey(brevoApiKey);
+    try {
+        System.out.println("=== STARTING EMAIL SEND ===");
+        System.out.println("=== TO: " + toEmail);
+        System.out.println("=== API KEY: " + brevoApiKey.substring(0, 10) + "...");
 
-            TransactionalEmailsApi api = new TransactionalEmailsApi();
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
+        apiKey.setApiKey(brevoApiKey);
 
-            SendSmtpEmailSender sender = new SendSmtpEmailSender();
-            sender.setEmail("abcae3001@smtp-brevo.com");
-            sender.setName("Breaking Bias");
+        System.out.println("=== API CLIENT CONFIGURED ===");
 
-            SendSmtpEmailTo to = new SendSmtpEmailTo();
-            to.setEmail(toEmail);
+        TransactionalEmailsApi api = new TransactionalEmailsApi();
 
-            SendSmtpEmail email = new SendSmtpEmail();
-            email.setSender(sender);
-            email.setTo(List.of(to));
-            email.setSubject(subject);
-            email.setTextContent(body);
+        SendSmtpEmailSender sender = new SendSmtpEmailSender();
+        sender.setEmail("abcae3001@smtp-brevo.com");
+        sender.setName("Breaking Bias");
 
-            api.sendTransacEmail(email);
-            System.out.println("=== EMAIL SENT TO: " + toEmail);
+        SendSmtpEmailTo to = new SendSmtpEmailTo();
+        to.setEmail(toEmail);
 
-        } catch (ApiException e) {
-            System.out.println("=== EMAIL FAILED: " + e.getMessage());
-            throw new RuntimeException("Email sending failed: " + e.getMessage());
-        }
+        SendSmtpEmail email = new SendSmtpEmail();
+        email.setSender(sender);
+        email.setTo(List.of(to));
+        email.setSubject(subject);
+        email.setTextContent(body);
+
+        System.out.println("=== CALLING BREVO API ===");
+        var result = api.sendTransacEmail(email);
+        System.out.println("=== EMAIL SENT SUCCESSFULLY: " + result);
+
+    } catch (ApiException e) {
+        System.out.println("=== API EXCEPTION: " + e.getMessage());
+        System.out.println("=== RESPONSE BODY: " + e.getResponseBody());
+        System.out.println("=== RESPONSE CODE: " + e.getCode());
+        throw new RuntimeException("Email sending failed: " + e.getMessage());
+    } catch (Exception e) {
+        System.out.println("=== GENERAL EXCEPTION: " + e.getMessage());
+        e.printStackTrace();
+        throw new RuntimeException("Email sending failed: " + e.getMessage());
     }
+}
 }
