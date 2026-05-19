@@ -21,9 +21,17 @@
 
 ## 📸 Screenshots
 
+<<<<<<< HEAD
 | Login Page | Dashboard | Analysis Result |
 |---|---|---|
 | ![Login](https://via.placeholder.com/300x200?text=Login+Page) | ![Dashboard](https://via.placeholder.com/300x200?text=Dashboard) | ![Result](https://via.placeholder.com/300x200?text=Analysis+Result) |
+=======
+## 📸 Screenshots
+
+| Login Page | Dashboard | Analysis Result |
+|---|---|---|
+| ![Login](./screenshots/login.png) | ![Dashboard](./screenshots/dashboard.png) | ![Result](./screenshots/result.png) |
+>>>>>>> 661c322c43e954a55f9cb5c3b1047c965d3e7563
 
 ---
 
