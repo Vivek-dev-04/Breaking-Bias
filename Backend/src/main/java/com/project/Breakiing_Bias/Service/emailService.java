@@ -3,11 +3,16 @@ package com.project.Breakiing_Bias.Service;
 import com.project.Breakiing_Bias.Entity.Users;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+// ✅ Correct Brevo imports
+import sendinblue.ApiClient;
+import sendinblue.ApiException;
+import sendinblue.Configuration;
+import sendinblue.auth.ApiKeyAuth;
 import sibApi.TransactionalEmailsApi;
 import sibModel.SendSmtpEmail;
 import sibModel.SendSmtpEmailSender;
 import sibModel.SendSmtpEmailTo;
-import sibInvoker.ApiClient;
 
 import java.util.List;
 
@@ -40,10 +45,11 @@ public class emailService {
 
     private void sendEmail(String toEmail, String subject, String body) {
         try {
-            ApiClient client = new ApiClient();
-            client.setApiKey(brevoApiKey);
+            ApiClient defaultClient = Configuration.getDefaultApiClient();
+            ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
+            apiKey.setApiKey(brevoApiKey);
 
-            TransactionalEmailsApi api = new TransactionalEmailsApi(client);
+            TransactionalEmailsApi api = new TransactionalEmailsApi();
 
             SendSmtpEmailSender sender = new SendSmtpEmailSender();
             sender.setEmail("abcae3001@smtp-brevo.com");
@@ -61,7 +67,7 @@ public class emailService {
             api.sendTransacEmail(email);
             System.out.println("=== EMAIL SENT TO: " + toEmail);
 
-        } catch (Exception e) {
+        } catch (ApiException e) {
             System.out.println("=== EMAIL FAILED: " + e.getMessage());
             throw new RuntimeException("Email sending failed: " + e.getMessage());
         }
